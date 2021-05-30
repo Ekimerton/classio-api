@@ -1,12 +1,10 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Time, create_engine
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.schema import UniqueConstraint
+from opencourse import db
 
-Base = declarative_base()
 
-
-class Course(Base):
+class Course(db.Model):
     __tablename__ = 'Course'
     id = Column(Integer, primary_key=True)
     code = Column(String)
@@ -15,8 +13,17 @@ class Course(Base):
     sections = relationship("Section", backref='course')
     UniqueConstraint('name', 'semester', name='uix_1')
 
+    def asdict(self):
+        sections = [section.asdict() for section in self.sections]
+        return {
+            'code': self.code,
+            'name': self.name,
+            'semester': self.semester,
+            'sections': sections
+        }
 
-class Section(Base):
+
+class Section(db.Model):
     __tablename__ = 'Section'
     id = Column(Integer, primary_key=True)
     code = Column(String)
@@ -25,8 +32,16 @@ class Section(Base):
     timeslots = relationship("Timeslot", backref='section')
     UniqueConstraint('course_id', 'code', 'kind', name='uix_1')
 
+    def asdict(self):
+        timeslots = [timeslot.asdict() for timeslot in self.timeslots]
+        return {
+            'code': self.code,
+            'kind': self.kind,
+            'timeslots': timeslots
+        }
 
-class Timeslot(Base):
+
+class Timeslot(db.Model):
     __tablename__ = 'Timeslot'
     id = Column(Integer, primary_key=True)
     day = Column(String)
@@ -34,8 +49,15 @@ class Timeslot(Base):
     end_time = Column(Time)
     section_id = Column(Integer, ForeignKey('Section.id'))
 
+    def asdict(self):
+        return {
+            'day': self.day,
+            'start_time': self.start_time.strftime("%H:%M"),
+            'end_time': self.end_time.strftime("%H:%M"),
+        }
+
 
 if __name__ == '__main__':
     db_name = input('Enter name of database to be created (eg: queens): ')
     engine = create_engine("sqlite:///data/{}.db".format(db_name))
-    Base.metadata.create_all(bind=engine)
+    db.create_all(bind=engine)
