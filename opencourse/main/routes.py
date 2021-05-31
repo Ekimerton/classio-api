@@ -1,20 +1,24 @@
 from opencourse import app
 from flask import json, jsonify, Blueprint, request
+from flask_cors import cross_origin
 from opencourse.models import Course, Section, Timeslot
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
+@cross_origin()
 def home():
     return jsonify({'message': 'welcome to opencourse'})
 
 @main.route('/semesters')
+@cross_origin()
 def all_semesters():
     query = Course.query.with_entities(Course.semester).distinct()
     semesters = [row.semester for row in query]
     return jsonify({'semesters': semesters})
 
 @main.route('/course')
+@cross_origin()
 def all_courses():
     semester = request.args.get("semester", default="2021 Fall", type=str)
     courses = Course.query.filter_by(semester=semester).all()
@@ -23,6 +27,7 @@ def all_courses():
 
 
 @main.route('/course/<string:code>')
+@cross_origin()
 def get_course(code):
     semester = request.args.get("semester", default="2021 Fall", type=str)
     course = Course.query.filter_by(code=code, semester=semester).first()
