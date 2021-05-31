@@ -11,7 +11,8 @@ class Course(db.Model):
     name = Column(String)
     semester = Column(String)
     sections = relationship("Section", backref='course')
-    UniqueConstraint('name', 'semester', name='uix_1')
+    __table_args__ = (UniqueConstraint(
+        'code', 'semester', name='_code_semester_uc'),)
 
     def asdict(self):
         sections = [section.asdict() for section in self.sections]
@@ -30,7 +31,8 @@ class Section(db.Model):
     kind = Column(String)
     course_id = Column(Integer, ForeignKey('Course.id'))
     timeslots = relationship("Timeslot", backref='section')
-    UniqueConstraint('course_id', 'code', 'kind', name='uix_1')
+    __table_args__ = (UniqueConstraint(
+        'course_id', 'code', name='_course_id_code_kind_uc'),)
 
     def asdict(self):
         timeslots = [timeslot.asdict() for timeslot in self.timeslots]

@@ -5,10 +5,12 @@ from opencourse.models import Course, Section, Timeslot
 
 main = Blueprint('main', __name__)
 
+
 @main.route('/')
 @cross_origin()
 def home():
     return jsonify({'message': 'welcome to opencourse'})
+
 
 @main.route('/semesters')
 @cross_origin()
@@ -17,13 +19,15 @@ def all_semesters():
     semesters = [row.semester for row in query]
     return jsonify({'semesters': semesters})
 
+
 @main.route('/course')
 @cross_origin()
 def all_courses():
     semester = request.args.get("semester", default="2021 Fall", type=str)
-    courses = Course.query.filter_by(semester=semester).all()
+    courses = Course.query.filter_by(
+        semester=semester).with_entities(Course.code).distinct()
     codes = [course.code for course in courses]
-    return jsonify({'course_codes':codes})
+    return jsonify({'course_codes': codes})
 
 
 @main.route('/course/<string:code>')
