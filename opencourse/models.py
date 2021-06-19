@@ -37,6 +37,7 @@ class Section(db.Model):
     def asdict(self):
         timeslots = [timeslot.asdict() for timeslot in self.timeslots]
         return {
+            'course_code': self.course.code,
             'code': self.code,
             'kind': self.kind,
             'timeslots': timeslots
