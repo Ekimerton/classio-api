@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-from models import Course, Section, Timeslot
+from models import Course, Timeslot, Section
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -176,7 +176,7 @@ def get_search(semester, subject_idx):
 
 login()
 semester = {
-    "year": "2021",
+    "year": "2019",
     "term": "Fall"
 }
 
