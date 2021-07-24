@@ -176,8 +176,8 @@ def get_search(semester, subject_idx):
 
 login()
 semester = {
-    "year": "2019",
-    "term": "Fall"
+    "year": "2022",
+    "term": "Winter"
 }
 
 subjects = get_subjects(semester)
