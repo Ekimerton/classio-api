@@ -9,7 +9,14 @@ main = Blueprint('main', __name__)
 @main.route('/')
 @cross_origin()
 def home():
-    return jsonify({'message': 'welcome to opencourse'})
+    return jsonify({'routes': [
+        {'/semesters': {'url args': 'None',
+                        'description': 'get all semesters provided by classio api'}},
+        {'/course': {'url args': 'semester code',
+                     'description': 'return all courses for a given semester'}},
+        {'/course/<COURSE_CODE>': {'url args': 'semester code',
+                                   'description': 'return information about given course code'}},
+    ]})
 
 
 @main.route('/semesters')
